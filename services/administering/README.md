@@ -6,9 +6,9 @@ Service de back-office pour la gestion administrative de la plateforme e-commerc
 
 ## Informations techniques
 
-- **Port gRPC**: 9009
+- **Port HTTP**: 9009
 - **Base de données**: InMemory
-- **Proto**: `administering/admin_service.proto`
+- **Proto**: `administering/admin_service.yaml`
 
 ## Responsabilités
 
@@ -24,7 +24,7 @@ Service de back-office pour la gestion administrative de la plateforme e-commerc
 - Configuration des taxes
 - Configuration des transporteurs
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -64,7 +64,7 @@ Service de back-office pour la gestion administrative de la plateforme e-commerc
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **CATALOGING** pour la gestion du catalogue
 - Appelle **ORDERING** pour la liste des commandes
 - Appelle **SHIPPING** pour dispatch des colis
@@ -77,23 +77,23 @@ Service de back-office pour la gestion administrative de la plateforme e-commerc
 ## Modèle de données
 
 ### Vendor
-```protobuf
-message Vendor {
-  string vendor_id = 1;
-  string name = 2;
-  string email = 3;
-  string company = 4;
-  string status = 5; // ACTIVE, INACTIVE
-  int64 created_at = 6;
+```JSON
+interface Vendor {
+  string: vendor_id = 1;
+  string: name = 2;
+  string: email = 3;
+  string: company = 4;
+  string: status = 5; // ACTIVE, INACTIVE
+  number: created_at = 6;
 }
 ```
 
 ### Settings
-```protobuf
-message Settings {
-  double default_tax_rate = 1;
-  string default_currency = 2;
-  repeated string available_carriers = 3;
+```JSON
+interface Settings {
+  number: default_tax_rate = 1;
+  string: default_currency = 2;
+  array: string: available_carriers = 3;
   map<string, string> custom_settings = 4;
 }
 ```
@@ -109,7 +109,7 @@ Ce service expose les APIs utilisées par le **back-office** pour :
 
 ## Configuration
 
-- Port gRPC: `9009`
+- Port HTTP: `9009`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `admin.events`
 

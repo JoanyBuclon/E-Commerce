@@ -6,9 +6,9 @@ Service de gestion du catalogue produits avec catégories et hiérarchies.
 
 ## Informations techniques
 
-- **Port gRPC**: 9002
+- **Port HTTP**: 9002
 - **Base de données**: InMemory (cache)
-- **Proto**: `cataloging/catalog_service.proto`
+- **Proto**: `cataloging/catalog_service.yaml`
 
 ## Responsabilités
 
@@ -22,7 +22,7 @@ Service de gestion du catalogue produits avec catégories et hiérarchies.
 - Hiérarchie de catégories
 - Navigation dans l'arborescence
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -55,7 +55,7 @@ Service de gestion du catalogue produits avec catégories et hiérarchies.
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelé par **CARTING** pour récupérer les informations produit
 - Appelé par **ADMINISTERING** pour la gestion du catalogue
 
@@ -65,32 +65,32 @@ Service de gestion du catalogue produits avec catégories et hiérarchies.
 ## Modèle de données
 
 ### Product
-```protobuf
-message Product {
-  string product_id = 1;
-  string name = 2;
-  string description = 3;
-  double price = 4;
-  string category_id = 5;
-  bool available = 6;
-  int64 created_at = 7;
-  int64 updated_at = 8;
+```JSON
+interface Product {
+  string: product_id = 1;
+  string: name = 2;
+  string: description = 3;
+  number: price = 4;
+  string: category_id = 5;
+  boolean: available = 6;
+  number: created_at = 7;
+  number: updated_at = 8;
 }
 ```
 
 ### Category
-```protobuf
-message Category {
-  string category_id = 1;
-  string name = 2;
-  string parent_id = 3; // null si catégorie racine
-  int32 level = 4;
+```JSON
+interface Category {
+  string: category_id = 1;
+  string: name = 2;
+  string: parent_id = 3; // null si catégorie racine
+  number: level = 4;
 }
 ```
 
 ## Configuration
 
-- Port gRPC: `9002`
+- Port HTTP: `9002`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `catalog.events`
 

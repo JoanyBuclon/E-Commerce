@@ -6,9 +6,9 @@ Service de gestion des stocks avec système de réservation et alertes de ruptur
 
 ## Informations techniques
 
-- **Port gRPC**: 9003
+- **Port HTTP**: 9003
 - **Base de données**: InMemory (avec row-level locking)
-- **Proto**: `stocking/stock_service.proto`
+- **Proto**: `stocking/stock_service.yaml`
 
 ## Responsabilités
 
@@ -27,7 +27,7 @@ Service de gestion des stocks avec système de réservation et alertes de ruptur
 - Libération des réservations expirées
 - Commit définitif lors de la validation de commande
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -58,7 +58,7 @@ Service de gestion des stocks avec système de réservation et alertes de ruptur
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelé par **CARTING** pour vérifier la disponibilité
 - Appelé par **ORDERING** pour commit du stock
 
@@ -69,31 +69,31 @@ Service de gestion des stocks avec système de réservation et alertes de ruptur
 ## Modèle de données
 
 ### Stock
-```protobuf
-message Stock {
-  string product_id = 1;
-  int32 available_quantity = 2;
-  int32 reserved_quantity = 3;
-  int32 committed_quantity = 4;
-  int32 low_stock_threshold = 5;
-  int64 updated_at = 6;
+```JSON
+interface Stock {
+  string: product_id = 1;
+  number: available_quantity = 2;
+  number: reserved_quantity = 3;
+  number: committed_quantity = 4;
+  number: low_stock_threshold = 5;
+  number: updated_at = 6;
 }
 ```
 
 ### Reservation
-```protobuf
-message Reservation {
-  string reservation_id = 1;
-  string product_id = 2;
-  int32 quantity = 3;
-  int64 expires_at = 4; // TTL
-  string status = 5; // PENDING, COMMITTED, RELEASED
+```JSON
+interface Reservation {
+  string: reservation_id = 1;
+  string: product_id = 2;
+  number: quantity = 3;
+  number: expires_at = 4; // TTL
+  string: status = 5; // PENDING, COMMITTED, RELEASED
 }
 ```
 
 ## Configuration
 
-- Port gRPC: `9003`
+- Port HTTP: `9003`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `stock.events`
 - TTL réservation par défaut: `15 minutes`

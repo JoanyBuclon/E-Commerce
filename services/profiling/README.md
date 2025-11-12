@@ -6,9 +6,9 @@ Service de gestion des profils utilisateurs, gérant l'authentification et les i
 
 ## Informations techniques
 
-- **Port gRPC**: 9001
+- **Port HTTP**: 9001
 - **Base de données**: InMemory
-- **Proto**: `profiling/profile_service.proto`
+- **Proto**: `profiling/profile_service.yaml`
 
 ## Responsabilités
 
@@ -25,7 +25,7 @@ Service de gestion des profils utilisateurs, gérant l'authentification et les i
 - Gestion du statut client (VIP, etc.)
 - Historique et préférences utilisateur
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -52,7 +52,7 @@ Service de gestion des profils utilisateurs, gérant l'authentification et les i
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 Aucune dépendance vers d'autres services.
 
 ### Asynchrone (Kafka)
@@ -61,35 +61,35 @@ Aucune dépendance vers d'autres services.
 ## Modèle de données
 
 ### User
-```protobuf
-message User {
-  string user_id = 1;
-  string email = 2;
-  string password_hash = 3;
-  string first_name = 4;
-  string last_name = 5;
-  string status = 6; // VIP, STANDARD, etc.
-  int64 created_at = 7;
-  int64 updated_at = 8;
+```JSON
+interface User {
+  string: user_id = 1;
+  string: email = 2;
+  string: password_hash = 3;
+  string: first_name = 4;
+  string: last_name = 5;
+  string: status = 6; // VIP, STANDARD, etc.
+  number: created_at = 7;
+  number: updated_at = 8;
 }
 ```
 
 ### Address
-```protobuf
-message Address {
-  string address_id = 1;
-  string user_id = 2;
-  string type = 3; // SHIPPING, BILLING
-  string street = 4;
-  string city = 5;
-  string postal_code = 6;
-  string country = 7;
+```JSON
+interface Address {
+  string: address_id = 1;
+  string: user_id = 2;
+  string: type = 3; // SHIPPING, BILLING
+  string: street = 4;
+  string: city = 5;
+  string: postal_code = 6;
+  string: country = 7;
 }
 ```
 
 ## Configuration
 
-- Port gRPC: `9001`
+- Port HTTP: `9001`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `profiling.events`
 

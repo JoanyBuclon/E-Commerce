@@ -8,7 +8,7 @@ Application front-end pour les clients de la plateforme e-commerce.
 
 ### Communication avec les microservices
 
-L'application front-office communique **directement** avec les microservices via gRPC.
+L'application front-office communique **directement** avec les microservices via REST API.
 
 **Pas de Gateway API** - Les appels sont faits directement depuis le navigateur vers les services.
 
@@ -87,9 +87,9 @@ Le front-office communique avec les services suivants :
 - **React** ou **Vue.js** ou **Angular**
 - **TypeScript** recommandé
 
-### Communication gRPC
-- **grpc-web** pour les appels gRPC depuis le navigateur
-- Génération des clients à partir des fichiers `.proto`
+### Communication REST API
+- **fetch/axios** pour les appels REST API depuis le navigateur
+- Génération des clients à partir des fichiers `.yaml`
 
 ### State Management
 - Redux / Vuex / NgRx selon le framework
@@ -157,10 +157,10 @@ ORDERING confirme la commande
 ### Authentification simple
 - Email + Password stocké dans PROFILING
 - Token JWT retourné après connexion
-- Token envoyé dans les headers gRPC
+- Token envoyé dans les headers REST API
 
 ### Pas de HTTPS obligatoire en dev
-- Communication gRPC en clair acceptable en développement
+- Communication REST API en clair acceptable en développement
 - **Production** : TLS obligatoire
 
 ## Installation
@@ -184,12 +184,12 @@ npm run dev
 npm run build
 ```
 
-## Génération des clients gRPC
+## Génération des clients REST API
 
 ```bash
-# Génération des clients à partir des .proto
+# Génération des clients à partir des .yaml
 # TODO: Script de génération
-./scripts/generate-grpc-clients.sh
+./scripts/generate-rest-clients.sh
 ```
 
 ## Tests
@@ -206,10 +206,10 @@ front-office/
 ├── src/
 │   ├── components/        # Composants UI
 │   ├── pages/            # Pages
-│   ├── services/         # Clients gRPC
+│   ├── services/         # clients REST API
 │   ├── store/            # State management
 │   ├── utils/            # Utilitaires
-│   └── proto/            # Fichiers .proto générés
+│   └── openapi/            # Fichiers .yaml générés
 ├── public/
 └── package.json
 ```

@@ -6,9 +6,9 @@ Service de traitement des paiements avec gestion des remboursements.
 
 ## Informations techniques
 
-- **Port gRPC**: 9006
+- **Port HTTP**: 9006
 - **Base de données**: InMemory (ACID)
-- **Proto**: `paying/payment_service.proto`
+- **Proto**: `paying/payment_service.yaml`
 
 ## Responsabilités
 
@@ -22,7 +22,7 @@ Service de traitement des paiements avec gestion des remboursements.
 - Remboursements partiels et totaux
 - Historique des remboursements
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -47,7 +47,7 @@ Service de traitement des paiements avec gestion des remboursements.
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **ORDERING** pour récupérer les détails de commande
 - Appelé par **ORDERING** pour créer le payment intent
 
@@ -58,26 +58,26 @@ Service de traitement des paiements avec gestion des remboursements.
 ## Modèle de données
 
 ### Payment
-```protobuf
-message Payment {
-  string payment_id = 1;
-  string order_id = 2;
-  double amount = 3;
-  string payment_method = 4; // CARD, PAYPAL, etc.
-  string status = 5; // PENDING, SUCCEEDED, FAILED, REFUNDED
-  int64 created_at = 6;
-  int64 processed_at = 7;
+```JSON
+interface Payment {
+  string: payment_id = 1;
+  string: order_id = 2;
+  number: amount = 3;
+  string: payment_method = 4; // CARD, PAYPAL, etc.
+  string: status = 5; // PENDING, SUCCEEDED, FAILED, REFUNDED
+  number: created_at = 6;
+  number: processed_at = 7;
 }
 ```
 
 ### Refund
-```protobuf
-message Refund {
-  string refund_id = 1;
-  string payment_id = 2;
-  double amount = 3;
-  string reason = 4;
-  int64 created_at = 5;
+```JSON
+interface Refund {
+  string: refund_id = 1;
+  string: payment_id = 2;
+  number: amount = 3;
+  string: reason = 4;
+  number: created_at = 5;
 }
 ```
 
@@ -100,7 +100,7 @@ Pour une vraie implémentation, intégrer :
 
 ## Configuration
 
-- Port gRPC: `9006`
+- Port HTTP: `9006`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `payment.events`
 - Mode simulation: `true`

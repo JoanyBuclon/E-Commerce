@@ -87,8 +87,8 @@ L'application back-office communique **directement** avec le service **ADMINISTE
 - **React** ou **Vue.js** ou **Angular**
 - **TypeScript** recommandé
 
-### Communication gRPC
-- **grpc-web** pour les appels gRPC depuis le navigateur
+### Communication REST API
+- **fetch/axios** pour les appels REST API depuis le navigateur
 - Communication principalement avec **ADMINISTERING:9009**
 
 ### State Management
@@ -179,12 +179,12 @@ npm run dev
 npm run build
 ```
 
-## Génération des clients gRPC
+## Génération des clients REST API
 
 ```bash
-# Génération des clients à partir des .proto
+# Génération des clients à partir des .yaml
 # TODO: Script de génération
-./scripts/generate-grpc-clients.sh
+./scripts/generate-rest-clients.sh
 ```
 
 ## Tests
@@ -205,10 +205,10 @@ back-office/
 │   │   ├── products/     # Gestion produits
 │   │   ├── orders/       # Gestion commandes
 │   │   └── settings/     # Paramètres
-│   ├── services/         # Clients gRPC
+│   ├── services/         # clients REST API
 │   ├── store/            # State management
 │   ├── utils/            # Utilitaires
-│   └── proto/            # Fichiers .proto générés
+│   └── openapi/            # Fichiers .yaml générés
 ├── public/
 └── package.json
 ```

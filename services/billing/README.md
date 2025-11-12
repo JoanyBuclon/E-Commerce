@@ -6,9 +6,9 @@ Service de génération de factures et gestion des taxes.
 
 ## Informations techniques
 
-- **Port gRPC**: 9007
+- **Port HTTP**: 9007
 - **Base de données**: InMemory
-- **Proto**: `billing/billing_service.proto`
+- **Proto**: `billing/billing_service.yaml`
 
 ## Responsabilités
 
@@ -23,7 +23,7 @@ Service de génération de factures et gestion des taxes.
 - Application des règles fiscales
 - Exports comptables
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -48,7 +48,7 @@ Service de génération de factures et gestion des taxes.
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **ORDERING** pour récupérer les détails de commande
 - Appelle **PROFILING** pour les adresses de facturation
 
@@ -59,32 +59,32 @@ Service de génération de factures et gestion des taxes.
 ## Modèle de données
 
 ### Invoice
-```protobuf
-message Invoice {
-  string invoice_id = 1;
-  string invoice_number = 2; // Format: INV-2024-00001
-  string order_id = 3;
-  string user_id = 4;
+```JSON
+interface Invoice {
+  string: invoice_id = 1;
+  string: invoice_number = 2; // Format: INV-2024-00001
+  string: order_id = 3;
+  string: user_id = 4;
   Address billing_address = 5;
-  repeated InvoiceItem items = 6;
-  double subtotal = 7;
-  double tax = 8;
-  double total = 9;
-  string status = 10; // DRAFT, FINALIZED, PAID
-  int64 created_at = 11;
-  int64 finalized_at = 12;
+  array: InvoiceItem items = 6;
+  number: subtotal = 7;
+  number: tax = 8;
+  number: total = 9;
+  string: status = 10; // DRAFT, FINALIZED, PAID
+  number: created_at = 11;
+  number: finalized_at = 12;
 }
 ```
 
 ### InvoiceItem
-```protobuf
-message InvoiceItem {
-  string product_name = 1;
-  double unit_price = 2;
-  int32 quantity = 3;
-  double subtotal = 4;
-  double tax_rate = 5;
-  double tax_amount = 6;
+```JSON
+interface InvoiceItem {
+  string: product_name = 1;
+  number: unit_price = 2;
+  number: quantity = 3;
+  number: subtotal = 4;
+  number: tax_rate = 5;
+  number: tax_amount = 6;
 }
 ```
 
@@ -99,7 +99,7 @@ Exemple : `INV-2024-00123`
 
 ## Configuration
 
-- Port gRPC: `9007`
+- Port HTTP: `9007`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `billing.events`
 - Taux de taxe par défaut: `20%`

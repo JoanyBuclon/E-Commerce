@@ -6,9 +6,9 @@ Service de gestion du cycle de vie des commandes et orchestration du processus d
 
 ## Informations techniques
 
-- **Port gRPC**: 9005
+- **Port HTTP**: 9005
 - **Base de données**: InMemory
-- **Proto**: `ordering/order_service.proto`
+- **Proto**: `ordering/order_service.yaml`
 
 ## Responsabilités
 
@@ -23,7 +23,7 @@ Service de gestion du cycle de vie des commandes et orchestration du processus d
 - Gestion des transitions d'état
 - Gestion des erreurs et compensations
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -55,7 +55,7 @@ Service de gestion du cycle de vie des commandes et orchestration du processus d
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **CARTING** pour récupérer le panier
 - Appelle **STOCKING** pour commit du stock
 - Appelle **SHIPPING** pour calculer les frais
@@ -69,39 +69,39 @@ Service de gestion du cycle de vie des commandes et orchestration du processus d
 ## Modèle de données
 
 ### Order
-```protobuf
-message Order {
-  string order_id = 1;
-  string user_id = 2;
-  string cart_id = 3;
-  repeated OrderItem items = 4;
+```JSON
+interface Order {
+  string: order_id = 1;
+  string: user_id = 2;
+  string: cart_id = 3;
+  array: OrderItem items = 4;
   Address shipping_address = 5;
   Address billing_address = 6;
-  string payment_method = 7;
-  double subtotal = 8;
-  double tax = 9;
-  double shipping_cost = 10;
-  double total = 11;
-  string status = 12; // CREATED, CONFIRMED, SHIPPED, DELIVERED, COMPLETED, CANCELLED
-  int64 created_at = 13;
-  int64 updated_at = 14;
+  string: payment_method = 7;
+  number: subtotal = 8;
+  number: tax = 9;
+  number: shipping_cost = 10;
+  number: total = 11;
+  string: status = 12; // CREATED, CONFIRMED, SHIPPED, DELIVERED, COMPLETED, CANCELLED
+  number: created_at = 13;
+  number: updated_at = 14;
 }
 ```
 
 ### OrderItem
-```protobuf
-message OrderItem {
-  string product_id = 1;
-  string product_name = 2;
-  double unit_price = 3;
-  int32 quantity = 4;
-  double subtotal = 5;
+```JSON
+interface OrderItem {
+  string: product_id = 1;
+  string: product_name = 2;
+  number: unit_price = 3;
+  number: quantity = 4;
+  number: subtotal = 5;
 }
 ```
 
 ## Configuration
 
-- Port gRPC: `9005`
+- Port HTTP: `9005`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `order.events`
 

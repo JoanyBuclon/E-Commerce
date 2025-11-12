@@ -6,9 +6,9 @@ Service de gestion du panier d'achat avec calcul des totaux et gestion des sessi
 
 ## Informations techniques
 
-- **Port gRPC**: 9004
+- **Port HTTP**: 9004
 - **Base de données**: InMemory (sessions)
-- **Proto**: `carting/cart_service.proto`
+- **Proto**: `carting/cart_service.yaml`
 
 ## Responsabilités
 
@@ -23,7 +23,7 @@ Service de gestion du panier d'achat avec calcul des totaux et gestion des sessi
 - Application des taxes
 - Calcul du total final
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -52,7 +52,7 @@ Service de gestion du panier d'achat avec calcul des totaux et gestion des sessi
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **CATALOGING** pour récupérer les infos produit
 - Appelle **STOCKING** pour vérifier la disponibilité
 - Appelé par **ORDERING** pour récupérer le panier
@@ -64,34 +64,34 @@ Service de gestion du panier d'achat avec calcul des totaux et gestion des sessi
 ## Modèle de données
 
 ### Cart
-```protobuf
-message Cart {
-  string cart_id = 1;
-  string user_id = 2; // null si anonyme
-  repeated CartItem items = 3;
-  double subtotal = 4;
-  double tax = 5;
-  double total = 6;
-  int64 created_at = 7;
-  int64 updated_at = 8;
-  int64 expires_at = 9; // TTL 7 jours
+```JSON
+interface Cart {
+  string: cart_id = 1;
+  string: user_id = 2; // null si anonyme
+  array: CartItem items = 3;
+  number: subtotal = 4;
+  number: tax = 5;
+  number: total = 6;
+  number: created_at = 7;
+  number: updated_at = 8;
+  number: expires_at = 9; // TTL 7 jours
 }
 ```
 
 ### CartItem
-```protobuf
-message CartItem {
-  string product_id = 1;
-  string product_name = 2;
-  double unit_price = 3;
-  int32 quantity = 4;
-  double subtotal = 5;
+```JSON
+interface CartItem {
+  string: product_id = 1;
+  string: product_name = 2;
+  number: unit_price = 3;
+  number: quantity = 4;
+  number: subtotal = 5;
 }
 ```
 
 ## Configuration
 
-- Port gRPC: `9004`
+- Port HTTP: `9004`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `cart.events`
 - TTL panier: `7 jours`

@@ -6,9 +6,9 @@ Service de gestion des expéditions avec calcul des frais et suivi des colis.
 
 ## Informations techniques
 
-- **Port gRPC**: 9008
+- **Port HTTP**: 9008
 - **Base de données**: InMemory
-- **Proto**: `shipping/shipping_service.proto`
+- **Proto**: `shipping/shipping_service.yaml`
 
 ## Responsabilités
 
@@ -27,7 +27,7 @@ Service de gestion des expéditions avec calcul des frais et suivi des colis.
 - Suivi de l'état d'expédition
 - Génération d'étiquettes d'expédition
 
-## API gRPC
+## API REST API
 
 ### Méthodes principales
 
@@ -53,7 +53,7 @@ Service de gestion des expéditions avec calcul des frais et suivi des colis.
 
 ## Communication avec autres services
 
-### Synchrone (gRPC)
+### Synchrone (REST API)
 - Appelle **PROFILING** pour récupérer l'adresse de livraison
 - Appelé par **ORDERING** pour calculer les frais
 - Appelé par **ADMINISTERING** pour dispatch
@@ -65,29 +65,29 @@ Service de gestion des expéditions avec calcul des frais et suivi des colis.
 ## Modèle de données
 
 ### Shipment
-```protobuf
-message Shipment {
-  string shipment_id = 1;
-  string order_id = 2;
-  string carrier = 3; // DHL, UPS, FedEx, etc.
-  string tracking_number = 4;
+```JSON
+interface Shipment {
+  string: shipment_id = 1;
+  string: order_id = 2;
+  string: carrier = 3; // DHL, UPS, FedEx, etc.
+  string: tracking_number = 4;
   Address destination = 5;
-  double weight = 6;
-  double shipping_cost = 7;
-  string status = 8; // CREATED, DISPATCHED, IN_TRANSIT, DELIVERED, EXCEPTION
-  int64 created_at = 9;
-  int64 dispatched_at = 10;
-  int64 delivered_at = 11;
+  number: weight = 6;
+  number: shipping_cost = 7;
+  string: status = 8; // CREATED, DISPATCHED, IN_TRANSIT, DELIVERED, EXCEPTION
+  number: created_at = 9;
+  number: dispatched_at = 10;
+  number: delivered_at = 11;
 }
 ```
 
 ### ShippingRate
-```protobuf
-message ShippingRate {
-  string carrier = 1;
-  string service_level = 2; // STANDARD, EXPRESS, OVERNIGHT
-  double cost = 3;
-  int32 estimated_days = 4;
+```JSON
+interface ShippingRate {
+  string: carrier = 1;
+  string: service_level = 2; // STANDARD, EXPRESS, OVERNIGHT
+  number: cost = 3;
+  number: estimated_days = 4;
 }
 ```
 
@@ -110,7 +110,7 @@ message ShippingRate {
 
 ## Configuration
 
-- Port gRPC: `9008`
+- Port HTTP: `9008`
 - Kafka broker: `localhost:9092`
 - Topic Kafka: `shipping.events`
 
