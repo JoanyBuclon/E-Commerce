@@ -8,7 +8,7 @@ Service de gestion des profils utilisateurs, gérant l'authentification et les i
 
 - **Port HTTP**: 9001
 - **Base de données**: InMemory
-- **Proto**: `profiling/profile_service.yaml`
+- **OpenAPI**: `profiling/profile_service.yaml`
 
 ## Responsabilités
 

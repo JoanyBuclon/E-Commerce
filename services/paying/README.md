@@ -8,7 +8,7 @@ Service de traitement des paiements avec gestion des remboursements.
 
 - **Port HTTP**: 9006
 - **Base de données**: InMemory (ACID)
-- **Proto**: `paying/payment_service.yaml`
+- **OpenAPI**: `paying/payment_service.yaml`
 
 ## Responsabilités
 

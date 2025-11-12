@@ -8,7 +8,7 @@ Service de gestion des expéditions avec calcul des frais et suivi des colis.
 
 - **Port HTTP**: 9008
 - **Base de données**: InMemory
-- **Proto**: `shipping/shipping_service.yaml`
+- **OpenAPI**: `shipping/shipping_service.yaml`
 
 ## Responsabilités
 

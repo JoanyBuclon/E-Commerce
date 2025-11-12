@@ -8,7 +8,7 @@ Service de back-office pour la gestion administrative de la plateforme e-commerc
 
 - **Port HTTP**: 9009
 - **Base de données**: InMemory
-- **Proto**: `administering/admin_service.yaml`
+- **OpenAPI**: `administering/admin_service.yaml`
 
 ## Responsabilités
 

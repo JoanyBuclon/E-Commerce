@@ -8,7 +8,7 @@ Service de gestion du cycle de vie des commandes et orchestration du processus d
 
 - **Port HTTP**: 9005
 - **Base de données**: InMemory
-- **Proto**: `ordering/order_service.yaml`
+- **OpenAPI**: `ordering/order_service.yaml`
 
 ## Responsabilités
 

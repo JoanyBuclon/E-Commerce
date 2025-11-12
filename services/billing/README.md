@@ -8,7 +8,7 @@ Service de génération de factures et gestion des taxes.
 
 - **Port HTTP**: 9007
 - **Base de données**: InMemory
-- **Proto**: `billing/billing_service.yaml`
+- **OpenAPI**: `billing/billing_service.yaml`
 
 ## Responsabilités
 

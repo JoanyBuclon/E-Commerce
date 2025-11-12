@@ -8,7 +8,7 @@ Service de gestion du catalogue produits avec catégories et hiérarchies.
 
 - **Port HTTP**: 9002
 - **Base de données**: InMemory (cache)
-- **Proto**: `cataloging/catalog_service.yaml`
+- **OpenAPI**: `cataloging/catalog_service.yaml`
 
 ## Responsabilités
 

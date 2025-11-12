@@ -8,7 +8,7 @@ Service de gestion des stocks avec système de réservation et alertes de ruptur
 
 - **Port HTTP**: 9003
 - **Base de données**: InMemory (avec row-level locking)
-- **Proto**: `stocking/stock_service.yaml`
+- **OpenAPI**: `stocking/stock_service.yaml`
 
 ## Responsabilités
 

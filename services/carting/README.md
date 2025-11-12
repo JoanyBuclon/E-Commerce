@@ -8,7 +8,7 @@ Service de gestion du panier d'achat avec calcul des totaux et gestion des sessi
 
 - **Port HTTP**: 9004
 - **Base de données**: InMemory (sessions)
-- **Proto**: `carting/cart_service.yaml`
+- **OpenAPI**: `carting/cart_service.yaml`
 
 ## Responsabilités
 
