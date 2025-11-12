@@ -18,7 +18,7 @@ Architecture microservices complète pour une plateforme e-commerce utilisant **
 
 ### Front-end
 
-Site E-commerce 
+Site E-commerce
 
 port 9000
 
@@ -27,7 +27,6 @@ Appel direct sur les micro-services.
 Pas d'authentification forte (juste un email/password suffit)
 
 ### Back-end
-
 
 Site de gestion back office du site e-commerce
 
@@ -45,89 +44,46 @@ Pas d'authentification forte (juste un email/password suffit)
 - **Port HTTP**: 9001
 - **Responsabilités**:
   - Gestion des profils utilisateurs (email / password)
-  - Adresses de livraison/facturation
-  - Statut client (VIP, etc.)
 - **Base de données**: InMemory
 - **OpenAPI**: `profiling/openapi.yaml`
 
 ---
 
-### Domaine Catalogue & Inventaire
+### Domaine Catalogue
 
 #### CATALOGING
 - **Port HTTP**: 9002
 - **Responsabilités**: 
-  - Gestion du catalogue produits
-  - Catégories et hiérarchies
+  - Gestion des produits (nom, description, prix)
 - **Base de données**: InMemory (cache)
 - **OpenAPI**: `cataloging/openapi.yaml`
-
-#### STOCKING
-- **Port HTTP**: 9003
-- **Responsabilités**: 
-  - Gestion des stocks
-  - Alertes de rupture
-- **Base de données**: InMemory (avec row-level locking)
-- **OpenAPI**: `stocking/openapi.yaml`
 
 ---
 
 ### Domaine Transaction
 
-#### CARTING
-- **Port HTTP**: 9004
-- **Responsabilités**: 
-  - Gestion du panier d'achat
-  - Calcul des totaux
-  - Paniers anonymes/authentifiés
-- **Base de données**: InMemory (sessions)
-- **OpenAPI**: `carting/openapi.yaml`
-
 #### ORDERING
-- **Port HTTP**: 9005
+- **Port HTTP**: 9003
 - **Responsabilités**: 
-  - Gestion du cycle de vie des commandes
+  - Gestion du cycle de vie des commandes (commandé, payé/en préparation, envoyé, livré)
   - Historique des commandes
 - **Base de données**: InMemory
 - **OpenAPI**: `ordering/openapi.yaml`
 
 #### PAYING
-- **Port HTTP**: 9006
+- **Port HTTP**: 9004
 - **Responsabilités**: 
   - Traitement des paiements (oui tout le temps)
   - Gestion des remboursements
 - **Base de données**: InMemory (ACID)
 - **OpenAPI**: `paying/openapi.yaml`
 
-#### BILLING
-- **Port HTTP**: 9007
-- **Responsabilités**: 
-  - Génération de factures
-  - Gestion des taxes
-- **Base de données**: InMemory
-- **OpenAPI**: `billing/openapi.yaml`
-
 #### SHIPPING
-- **Port HTTP**: 9008
+- **Port HTTP**: 9005
 - **Responsabilités**: 
-  - Calcul des frais d'expédition
-  - Gestion des transporteurs
-  - Suivi des colis (tracking)
-  - Étiquettes d'expédition
+  - Gestion du cycle de vie des livraisons (commandé, payé/en préparation, envoyé, livré)
 - **Base de données**: InMemory
 - **OpenAPI**: `shipping/openapi.yaml`
-
----
-
-### Domaine Administration
-
-#### ADMINISTERING
-- **Port HTTP**: 9009
-- **Responsabilités**: 
-  - Back-office de gestion (ajout vendeur et produit)
-  - Paramètres système
-- **Base de données**: InMemory
-- **OpenAPI**: `administering/openapi.yaml`
 
 ---
 
