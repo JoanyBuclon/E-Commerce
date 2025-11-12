@@ -26,6 +26,13 @@ Appel direct sur les micro-services.
 
 Pas d'authentification forte (juste un email/password suffit)
 
+
+#### use case:
+ - se connecter (email/password)
+ - lister les produits (+ recherche simple par nom)
+ - commander un produit (ajouter au panier)
+ - payer une commande
+
 ### Back-end
 
 Site de gestion back office du site e-commerce
@@ -35,6 +42,11 @@ port 9010
 Appel direct sur les micro-services.
 
 Pas d'authentification forte (juste un email/password suffit)
+
+#### use case:
+ - ajouter produit (nom, detail, prix)
+ - evolution des livraisons (statut envoyé, livré)
+
 
 ## Liste des microservices
 
@@ -55,6 +67,7 @@ Pas d'authentification forte (juste un email/password suffit)
 - **Port HTTP**: 9002
 - **Responsabilités**: 
   - Gestion des produits (nom, description, prix)
+  - lister les produits (+ recherche simple par nom)
 - **Base de données**: InMemory (cache)
 - **OpenAPI**: `cataloging/openapi.yaml`
 
@@ -65,7 +78,7 @@ Pas d'authentification forte (juste un email/password suffit)
 #### ORDERING
 - **Port HTTP**: 9003
 - **Responsabilités**: 
-  - Gestion du cycle de vie des commandes (commandé, payé/en préparation, envoyé, livré)
+  - Gestion du cycle de vie des commandes (créé, commandé, payé/en préparation, envoyé, livré, annulé)
   - Historique des commandes
 - **Base de données**: InMemory
 - **OpenAPI**: `ordering/openapi.yaml`
@@ -74,14 +87,13 @@ Pas d'authentification forte (juste un email/password suffit)
 - **Port HTTP**: 9004
 - **Responsabilités**: 
   - Traitement des paiements (oui tout le temps)
-  - Gestion des remboursements
 - **Base de données**: InMemory (ACID)
 - **OpenAPI**: `paying/openapi.yaml`
 
 #### SHIPPING
 - **Port HTTP**: 9005
 - **Responsabilités**: 
-  - Gestion du cycle de vie des livraisons (commandé, payé/en préparation, envoyé, livré)
+  - Gestion du cycle de vie des livraisons (payé/en préparation, envoyé, livré, annulé)
 - **Base de données**: InMemory
 - **OpenAPI**: `shipping/openapi.yaml`
 
@@ -92,7 +104,7 @@ Pas d'authentification forte (juste un email/password suffit)
 ### Stack technologique
 
 #### Communication
-- **REST API**: HTTP/1.1 avec JSON
+- **REST API**: HTTP/1.1 avec JSON (openAPI)
 - **Event Bus**: Apache Kafka avec Schema Registry (JSON Schema)
 
 
@@ -112,7 +124,6 @@ Pas d'authentification forte (juste un email/password suffit)
 #### Event-Driven Architecture
 - Communication asynchrone via Kafka
 - Découplage temporel entre services
-- Event sourcing optionnel pour auditabilité
 
 #### CQRS (optionnel)
 - Séparation lecture/écriture
@@ -125,10 +136,7 @@ Pas d'authentification forte (juste un email/password suffit)
 
 - **REST API**: Architecture de services web utilisant HTTP et JSON
 - **OpenAPI**: Spécification pour décrire et documenter les APIs REST
-- **Event Sourcing**: Pattern où les changements d'état sont stockés comme séquence d'événements
 - **CQRS**: Command Query Responsibility Segregation - séparation read/write
-- **Saga**: Pattern de transaction distribuée avec compensation
-- **Circuit Breaker**: Pattern empêchant les appels à un service défaillant
 
 ### Ressources
 
@@ -141,48 +149,3 @@ Pas d'authentification forte (juste un email/password suffit)
 - **Swagger UI**: Interface pour tester les APIs REST
 - **Postman**: Client API pour tests REST
 - **Insomnia**: Client API alternatif
-
-
-
-### exemple: Processus de commande complet
-
-**Étapes détaillées**:
-
-1. **Création de commande**
-   - Client → `ORDERING.CreateOrder()` avec cart_id, adresses, méthode paiement
-   - ORDERING récupère le panier via `GET /carts/{cart_id}` (REST sync)
-   - Validation des données
-
-2. **Publication OrderCreated**
-   - ORDERING publie `OrderCreated` avec détails complets
-
-3. **Consommation parallèle**
-   - **PAYING**: Crée payment intent via `CreatePaymentIntent()`
-   - **BILLING**: Crée une facture brouillon
-
-4. **Traitement du paiement**
-   - PAYING traite et valide le paiement
-
-5. **Paiement réussi**
-   - PAYING publie `PaymentSucceeded`
-
-6. **Confirmation de commande**
-   - ORDERING consomme `PaymentSucceeded`
-   - Met à jour statut à "confirmed"
-   - Publie `OrderConfirmed`
-
-7. **Actions post-confirmation**
-   - **STOCKING**: Commit définitif du stock réservé
-   - **SHIPPING**: Crée l'expédition via `CreateShipment()`
-   - **BILLING**: Finalise la facture et génère le PDF
-
-
----
-
-## Changelog
-
-| Version | Date | Auteur | Changements |
-|---------|------|--------|-------------|
-| 1.0 | 2025-11-12 | Architecture Team | Version initiale - Architecture complète avec REST API |
-
----
