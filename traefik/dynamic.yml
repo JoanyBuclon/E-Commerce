@@ -1,0 +1,45 @@
+http:
+  routers:
+    # Exemple pour un service externe (décommentez et adaptez si le service n'est pas dans Docker)
+    # external-profiling:
+    #   rule: "PathPrefix(`/api/profiling`)"
+    #   service: external-profiling-svc
+    #   middlewares:
+    #     - profiling-strip
+  
+  services:
+    # external-profiling-svc:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://192.168.1.50:9001" # IP de l'autre machine sur votre réseau
+
+  middlewares:
+    # Définition des middlewares (nécessaire si on n'utilise pas les labels Docker)
+    profiling-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/profiling"
+    cataloging-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/cataloging"
+    ordering-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/ordering"
+    paying-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/paying"
+    shipping-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/shipping"
+    stocking-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/stocking"
+    administering-strip:
+      stripPrefix:
+        prefixes:
+          - "/api/administering"

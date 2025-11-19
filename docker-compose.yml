@@ -1,4 +1,25 @@
 services:
+  # --- Infrastructure ---
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Activation du File Provider pour les services externes
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro"
+    networks:
+      - e-commerce-network
+
   kafka:
     image: apache/kafka:4.0.0
     container_name: kafka
@@ -6,27 +27,22 @@ services:
       - "9092:9092"
       - "9093:9093"
     environment:
-      # Identifiant unique du nœud Kafka
       KAFKA_NODE_ID: 1
-
-      # Configuration KRaft (mode sans ZooKeeper)
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-
-      # Configuration des listeners
+      
+      # Ecoute sur toutes les interfaces (0.0.0.0) pour accepter les connexions externes
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:19092
+      
+      # IMPORTANT: Annonce l'IP de la machine (HOST_IP) aux clients externes
+      # Si HOST_IP n'est pas défini, fallback sur localhost (ne marchera que en local)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_IP:-localhost}:9092,PLAINTEXT_INTERNAL://kafka:19092
+      
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
-
-      # Configuration du cluster
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
-
-      # Configuration des logs
       KAFKA_LOG_DIRS: /var/lib/kafka/data
-
-      # Configuration par défaut
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -40,13 +56,13 @@ services:
       retries: 5
       start_period: 30s
     networks:
-      - kafka-network
+      - e-commerce-network
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8080:8080"
+      - "8090:8080"
     environment:
       DYNAMIC_CONFIG_ENABLED: "true"
       KAFKA_CLUSTERS_0_NAME: local
@@ -55,12 +71,12 @@ services:
       kafka:
         condition: service_healthy
     networks:
-      - kafka-network
+      - e-commerce-network
 
 volumes:
   kafka-data:
     driver: local
 
 networks:
-  kafka-network:
+  e-commerce-network:
     driver: bridge
