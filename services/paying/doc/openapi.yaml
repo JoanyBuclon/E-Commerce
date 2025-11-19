@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: Paying API
+  description: Traitement des paiements
+  version: 1.0.0
+servers:
+  - url: http://localhost:9004
+    description: Local server
+paths:
+  /payments:
+    post:
+      summary: Payer une commande
+      operationId: processPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: {type: string, format: uuid}
+                amount: {type: number}
+                currency: {type: string, default: "EUR"}
+                paymentMethod: {type: string}
+      responses:
+        '201':
+          description: Paiement accepté
+        '400':
+          description: Paiement refusé

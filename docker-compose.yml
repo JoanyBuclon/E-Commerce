@@ -5,9 +5,7 @@ services:
     container_name: traefik
     command:
       - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      # Activation du File Provider pour les services externes
+      - "--providers.docker=false" # Désactivé car tout est dans dynamic.yml
       - "--providers.file.filename=/etc/traefik/dynamic.yml"
       - "--providers.file.watch=true"
       - "--entrypoints.web.address=:80"
@@ -31,8 +29,6 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      
-      # Ecoute sur toutes les interfaces (0.0.0.0) pour accepter les connexions externes
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
       
       # IMPORTANT: Annonce l'IP de la machine (HOST_IP) aux clients externes

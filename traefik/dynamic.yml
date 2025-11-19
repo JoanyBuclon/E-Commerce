@@ -1,45 +1,86 @@
 http:
   routers:
-    # Exemple pour un service externe (décommentez et adaptez si le service n'est pas dans Docker)
-    # external-profiling:
-    #   rule: "PathPrefix(`/api/profiling`)"
-    #   service: external-profiling-svc
-    #   middlewares:
-    #     - profiling-strip
-  
-  services:
-    # external-profiling-svc:
-    #   loadBalancer:
-    #     servers:
-    #       - url: "http://192.168.1.50:9001" # IP de l'autre machine sur votre réseau
+    # --- Sites ---
+    front-office:
+      rule: "PathPrefix(`/`)"
+      service: front-office
+      # Pas de strip prefix pour le front
+
+    back-office:
+      rule: "Host(`admin.localhost`) || Host(`admin.192.168.1.42.nip.io`)"
+      service: back-office
+
+    # --- Microservices ---
+    profiling:
+      rule: "PathPrefix(`/api/profiling`)"
+      service: profiling
+      middlewares: [profiling-strip]
+
+    cataloging:
+      rule: "PathPrefix(`/api/cataloging`)"
+      service: cataloging
+      middlewares: [cataloging-strip]
+
+    ordering:
+      rule: "PathPrefix(`/api/ordering`)"
+      service: ordering
+      middlewares: [ordering-strip]
+
+    paying:
+      rule: "PathPrefix(`/api/paying`)"
+      service: paying
+      middlewares: [paying-strip]
+
+    shipping:
+      rule: "PathPrefix(`/api/shipping`)"
+      service: shipping
+      middlewares: [shipping-strip]
 
   middlewares:
-    # Définition des middlewares (nécessaire si on n'utilise pas les labels Docker)
     profiling-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/profiling"
+      stripPrefix: { prefixes: ["/api/profiling"] }
     cataloging-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/cataloging"
+      stripPrefix: { prefixes: ["/api/cataloging"] }
     ordering-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/ordering"
+      stripPrefix: { prefixes: ["/api/ordering"] }
     paying-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/paying"
+      stripPrefix: { prefixes: ["/api/paying"] }
     shipping-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/shipping"
-    stocking-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/stocking"
-    administering-strip:
-      stripPrefix:
-        prefixes:
-          - "/api/administering"
+      stripPrefix: { prefixes: ["/api/shipping"] }
+
+  services:
+    # --- Definitions vers 192.168.1.42 ---
+    front-office:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9000"
+    
+    back-office:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9010"
+
+    profiling:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9001"
+
+    cataloging:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9002"
+
+    ordering:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9003"
+
+    paying:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9004"
+
+    shipping:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.42:9005"

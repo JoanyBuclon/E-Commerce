@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: Profiling API
+  description: Gestion des profils utilisateurs (email / password)
+  version: 1.0.0
+servers:
+  - url: http://localhost:9001
+    description: Local server
+paths:
+  /users:
+    post:
+      summary: Créer un utilisateur
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUnput'
+      responses:
+        '201':
+          description: Utilisateur créé
+  
+  /login:
+    post:
+      summary: Connexion
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: {type: string}
+                password: {type: string}
+      responses:
+        '200':
+          description: Connecté
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Récupérer un profil
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Profil utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    UserUnput:
+      type: object
+      properties:
+        email: {type: string, format: email}
+        password: {type: string}
+        firstName: {type: string}
+        lastName: {type: string}
+    User:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        email: {type: string}
+        firstName: {type: string}
+        lastName: {type: string}
