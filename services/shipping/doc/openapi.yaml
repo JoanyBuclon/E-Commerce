@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: Shipping API
+  description: Gestion du cycle de vie des livraisons
+  version: 1.0.0
+servers:
+  - url: http://localhost:9005
+    description: Local server
+paths:
+  /shipments:
+    post:
+      summary: Créer une expédition
+      operationId: createShipment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShipmentInput'
+      responses:
+        '201':
+          description: Expédition créée
+
+  /shipments/{id}/status:
+    put:
+      summary: Mettre à jour le statut (Envoyé, Livré...)
+      operationId: updateShipmentStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [PREPARING, SHIPPED, DELIVERED, RETURNED]
+      responses:
+        '200':
+          description: Statut mis à jour
+
+components:
+  schemas:
+    ShipmentInput:
+      type: object
+      properties:
+        orderId: {type: string, format: uuid}
+        address:
+          type: object
+          properties:
+            street: {type: string}
+            city: {type: string}
+            zip: {type: string}
+    Shipment:
+      allOf:
+        - $ref: '#/components/schemas/ShipmentInput'
+        - type: object
+          properties:
+            id: {type: string, format: uuid}
+            status: {type: string}

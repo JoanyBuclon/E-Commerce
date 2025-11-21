@@ -1,61 +1,83 @@
 # E-Commerce
- Ce repo contiens toutes les instructions pour suivre la 5e session Vibe Coding de Sfeir Bordeaux.
 
-Vous trouverez les étapes à suivre ici :
+Ce repo contient toutes les instructions pour suivre la 5e session Vibe Coding de Sfeir Bordeaux.
 
-- Aucune étape pour l'instant
+## Objectifs
 
-## Les règles
+Créer et démarrer les différents micro-services et web app, et faire une première commande.
 
-En choisissant l'outil IA de votre choix ainsi que la technologie de votre choix, nous réaliserons un site e-commerce en coopération et en suivant les étapes mentionnées ci-dessus.
+## Installation et Démarrage
 
-Nous ferons un point toutes les demi-heures pour vérifier l'avancement de tous.
+### Prérequis
+- Docker Desktop
+- Git
 
-N'hésitez pas à demander de l'aide! L'objectif est de découvrir le fonctionnement de ces outils ainsi que leur limitations.
+### Lancement Rapide
 
-## objectifs
-
-Creer et démarrer les differents micro-services et web app, et faire une premiere commande (generation de la facture au format pdf)
-
-## Solutions
-
-En plus des instructions, ce repo contiens des exemples de solution pour les exercices réalisés.
-
-## Infrastructure
-
-### Kafka (Bus de messages)
-
-Ce projet utilise Apache Kafka 4 comme bus de messages pour la communication entre les microservices.
-
-#### Démarrage de Kafka
-
-Pour lancer Kafka en local avec son interface d'administration :
+Utilisez le script fourni pour lancer toute la stack (Infrastructure + Services + Frontends). Ce script configure automatiquement l'adresse IP pour permettre l'accès réseau (important pour Kafka).
 
 ```bash
-docker-compose up -d
+./start.sh
 ```
 
 Cela démarre :
-- **Kafka 4** (mode KRaft, sans ZooKeeper) sur le port `9092`
-- **Kafka UI** (interface web) accessible sur http://localhost:8080
+- **Front-Office** : http://localhost
+- **Back-Office** : http://admin.localhost (pensez à ajouter `127.0.0.1 admin.localhost` à votre `/etc/hosts`)
+- **Traefik Dashboard** : http://localhost:8080/dashboard/
+- **Kafka UI** : http://localhost:8090
+- **Kafka Broker** : Port 9092 (accessible via IP locale)
+- **Microservices** : Accessibles via `http://localhost/api/<service>/...`
 
-#### Utilisation de Kafka UI
+## Infrastructure Technique
 
-Une fois les conteneurs démarrés, accédez à http://localhost:8080 pour :
-- Visualiser et gérer les topics
-- Envoyer des messages dans les topics
-- Consommer et lire les messages
-- Monitorer les consumers groups
-- Voir les configurations du cluster
+### API Gateway (Traefik)
+Traefik agit comme point d'entrée unique (BFF - Backend for Frontend) et reverse proxy.
+- `admin.localhost` -> Back-Office
+- `/` -> Front-Office
+- `/api/<service>` -> Microservices
 
-#### Arrêt de l'infrastructure
+### Kafka (Bus de messages)
+Apache Kafka 4 (KRaft) assure la communication asynchrone.
+Le broker annonce l'IP de votre machine (via `HOST_IP`) pour permettre aux services situés sur d'autres machines du réseau de s'y connecter.
 
-```bash
-docker-compose down
+## Déploiement Distribué (Réseau Local)
+
+Si vous souhaitez faire tourner un microservice (ex: `profiling`) sur une autre machine de votre réseau local (ex: `192.168.1.50`), suivez ces étapes :
+
+### 1. Désactiver le service local
+Dans `docker-compose.yml`, commentez ou supprimez le service concerné pour qu'il ne tourne plus sur votre machine principale.
+
+### 2. Configurer la redirection dans Traefik
+Ouvrez le fichier `traefik/dynamic.yml`.
+Décommentez et adaptez la configuration du routeur et du service pour pointer vers l'IP de l'autre machine.
+
+Exemple pour `profiling` :
+
+```yaml
+http:
+  routers:
+    external-profiling:
+      rule: "PathPrefix(`/api/profiling`)"
+      service: external-profiling-svc
+      middlewares:
+        - profiling-strip
+  
+  services:
+    external-profiling-svc:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.50:9001" # IP de la machine qui héberge le service
 ```
 
-Pour supprimer également les données :
+Traefik rechargera cette configuration automatiquement (hot-reload).
+
+### 3. Connecter le service distant à Kafka
+Sur la machine distante, assurez-vous que votre microservice pointe bien vers l'IP de votre machine principale pour Kafka (et non `localhost`), car Kafka annonce l'IP du réseau.
+
+## Arrêt
 
 ```bash
-docker-compose down -v
+docker compose down
+# ou pour tout supprimer (volumes inclus)
+docker compose down -v
 ```
