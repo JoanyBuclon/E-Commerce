@@ -2,7 +2,52 @@
 
 ## Vue d'ensemble
 
-Application front-end pour les clients de la plateforme e-commerce.
+Application front-end pour les clients de la plateforme e-commerce construite avec **SvelteKit 2**, **TypeScript** et **Tailwind CSS 4**.
+
+## Quick Start
+
+### Development (Local)
+
+```bash
+cd front-office-example
+npm install
+npm run dev
+```
+
+Accès: `http://localhost:5173`
+
+### Production (Docker)
+
+**Option 1: Container Docker autonome**
+
+```bash
+cd front-office-example
+
+# Build
+docker build -t front-office:latest .
+
+# Run
+docker run -p 9000:3000 front-office:latest
+```
+
+Accès: `http://localhost:9000`
+
+**Option 2: Docker Compose (depuis la racine du projet)**
+
+```bash
+# Build et démarrage
+docker compose up -d front-office
+
+# Logs
+docker compose logs -f front-office
+
+# Arrêt
+docker compose down front-office
+```
+
+Ensuite, mettez à jour `traefik/dynamic.yml` pour pointer vers `http://front-office:3000` et accédez via Traefik à `http://localhost`
+
+**Documentation complète:** Voir [DOCKER.md](./front-office-example/DOCKER.md)
 
 ## Architecture
 
@@ -79,27 +124,31 @@ Le front-office communique avec les services suivants :
 
 ## Stack technique
 
-### Framework suggéré
+### Framework
 
-- **React** ou **Vue.js** ou **Angular**
-- **TypeScript** recommandé
+- **SvelteKit 2** - Framework full-stack avec SSR et routing
+- **Svelte 5** - Avec Svelte runes ($state, $derived, $effect)
+- **TypeScript** - Type safety complet
+- **Vite 7** - Build tool rapide et moderne
 
 ### Communication REST API
 
-- **fetch/axios** pour les appels REST API depuis le navigateur
-- Génération des clients à partir des fichiers `.yaml`
+- **fetch** native pour les appels REST API
+- Services singleton avec dual-mode (mock/real API)
+- Type-safe avec interfaces TypeScript complètes
 
 ### State Management
 
-- Redux / Vuex / NgRx selon le framework
-- Gestion du state du panier
-- Gestion de l'authentification
+- **Svelte stores** pour le state global (authStore, cartStore)
+- State réactif natif avec Svelte runes
+- Gestion du panier côté client (localStorage)
+- Gestion de l'authentification avec JWT
 
 ### UI/UX
 
-- Framework CSS (Tailwind, Material-UI, etc.)
-- Responsive design
-- Progressive Web App (optionnel)
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **Design responsive** - Mobile-first approach
+- **Accessibilité** - ARIA labels et keyboard navigation
 
 ## Configuration des services
 
@@ -137,4 +186,3 @@ export const SERVICES = {
 - `/register` - Inscription
 - `/account` - Mon compte
 - `/orders` - Mes commandes
-- `/order/:id` - Détail commande

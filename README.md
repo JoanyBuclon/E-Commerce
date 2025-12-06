@@ -28,6 +28,26 @@ Cela démarre :
 - **Kafka Broker** : Port 9092 (accessible via IP locale)
 - **Microservices** : Accessibles via `http://localhost/api/<service>/...`
 
+### Front-Office avec Docker
+
+Le front-office peut également être lancé dans un container Docker :
+
+```bash
+# Option 1: Build et run direct
+cd sites/front-office/front-office-example
+docker build -t front-office:latest .
+docker run -p 9000:3000 front-office:latest
+```
+
+```bash
+# Option 2: Via Docker Compose
+docker compose up -d front-office
+```
+
+Pour utiliser le front-office conteneurisé avec Traefik, modifiez `traefik/dynamic.yml` pour pointer vers `http://front-office:3000` au lieu de `http://192.168.1.42:9000`.
+
+**Documentation complète:** [sites/front-office/front-office-example/DOCKER.md](sites/front-office/front-office-example/DOCKER.md)
+
 ## Infrastructure Technique
 
 ### API Gateway (Traefik)
