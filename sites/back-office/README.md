@@ -2,7 +2,52 @@
 
 ## Vue d'ensemble
 
-Application d'administration pour la gestion de la plateforme e-commerce.
+Application d'administration pour la gestion de la plateforme e-commerce construite avec **SvelteKit 2**, **TypeScript** et **Tailwind CSS 4**.
+
+## Quick Start
+
+### Development (Local)
+
+```bash
+cd back-office-example
+npm install
+npm run dev
+```
+
+Accès: `http://localhost:5173`
+
+### Production (Docker)
+
+**Option 1: Container Docker autonome**
+
+```bash
+cd back-office-example
+
+# Build
+docker build -t back-office:latest .
+
+# Run
+docker run -p 9010:3000 back-office:latest
+```
+
+Accès: `http://localhost:9010`
+
+**Option 2: Docker Compose (depuis la racine du projet)**
+
+```bash
+# Build et démarrage
+docker compose up -d back-office
+
+# Logs
+docker compose logs -f back-office
+
+# Arrêt
+docker compose down back-office
+```
+
+Ensuite, mettez à jour `traefik/dynamic.yml` pour pointer vers `http://back-office:3000` et accédez via Traefik à `http://admin.localhost`
+
+**Documentation complète:** Voir [DOCKER.md](./back-office-example/DOCKER.md)
 
 ## Architecture
 

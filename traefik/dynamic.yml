@@ -49,16 +49,34 @@ http:
       stripPrefix: { prefixes: ["/api/shipping"] }
 
   services:
-    # --- Definitions vers 192.168.1.42 ---
+    # --- Service Definitions ---
+    # Front-Office: Choose one option below
+
+    # Option 1: Running on host machine (current setup)
     front-office:
       loadBalancer:
         servers:
           - url: "http://192.168.1.42:9000"
-    
+
+    # Option 2: Running in Docker container (uncomment and comment Option 1)
+    # front-office:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://front-office:3000"
+
+    # Back-Office: Choose one option below
+
+    # Option 1: Running on host machine (current setup)
     back-office:
       loadBalancer:
         servers:
           - url: "http://192.168.1.42:9010"
+
+    # Option 2: Running in Docker container (uncomment and comment Option 1)
+    # back-office:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://back-office:3000"
 
     profiling:
       loadBalancer:
