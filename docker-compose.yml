@@ -69,6 +69,64 @@ services:
     networks:
       - e-commerce-network
 
+  # --- Front-Office Application ---
+  # Uncomment this section to run front-office in Docker
+  # Don't forget to update traefik/dynamic.yml to point to this service
+  front-office:
+    build:
+      context: ./sites/front-office/front-office-example
+      dockerfile: Dockerfile
+      args:
+        # Build-time arguments for Vite environment variables
+        # These are baked into the application during build
+        VITE_API_BASE_URL: http://localhost/api
+        # Override specific services if needed (uncomment to use)
+        # VITE_PROFILING_URL: http://192.168.1.42:9001
+        # VITE_CATALOGING_URL: http://192.168.1.42:9002
+        # VITE_ORDERING_URL: http://192.168.1.42:9003
+        # VITE_PAYING_URL: http://192.168.1.42:9004
+        # VITE_SHIPPING_URL: http://192.168.1.42:9005
+    container_name: front-office
+    ports:
+      - "9000:3000"  # Map container port 3000 to host port 9000
+    environment:
+      # Runtime configuration (server settings)
+      PORT: 3000
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    networks:
+      - e-commerce-network
+    restart: unless-stopped
+
+  # --- Back-Office Application ---
+  # Uncomment this section to run back-office in Docker
+  # Don't forget to update traefik/dynamic.yml to point to this service
+  back-office:
+    build:
+      context: ./sites/back-office/back-office-example
+      dockerfile: Dockerfile
+      args:
+        # Build-time arguments for Vite environment variables
+        # These are baked into the application during build
+        VITE_API_BASE_URL: http://localhost/api
+        # Override specific services if needed (uncomment to use)
+        # VITE_PROFILING_URL: http://192.168.1.42:9001
+        # VITE_CATALOGING_URL: http://192.168.1.42:9002
+        # VITE_ORDERING_URL: http://192.168.1.42:9003
+        # VITE_PAYING_URL: http://192.168.1.42:9004
+        # VITE_SHIPPING_URL: http://192.168.1.42:9005
+    container_name: back-office
+    ports:
+      - "9010:3000"  # Map container port 3000 to host port 9010
+    environment:
+      # Runtime configuration (server settings)
+      PORT: 3000
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    networks:
+      - e-commerce-network
+    restart: unless-stopped
+
 volumes:
   kafka-data:
     driver: local
