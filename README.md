@@ -121,3 +121,7 @@ docker compose down
 # ou pour tout supprimer (volumes inclus)
 docker compose down -v
 ```
+
+
+## Lien vers les slides 
+[Ici](https://docs.google.com/presentation/d/1UGYW3IjrTDb5I37UtbeuWGy8Bxe5wGZFSQLHmPLIT74/edit?usp=sharing)
